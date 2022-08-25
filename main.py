@@ -89,9 +89,6 @@ class Comment(db.Model):
     text = db.Column(db.Text, nullable=False)
 
 
-db.create_all()
-
-
 # NOTE: making the login_manager to load the current user .. so that we can  later user TODO:current_user method ..
 @login_manager.user_loader
 def load_user(user_id):
