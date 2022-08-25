@@ -66,7 +66,7 @@ class BlogPost(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     author_id = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
+        db.Integer, db.ForeignKey("user_final.id"))
     author = relationship('Users', back_populates='child', lazy=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
@@ -81,10 +81,10 @@ class Comment(db.Model):
     # __table_args__ = ({'schema': 'flask_blog'})
     id = db.Column(db.Integer, primary_key=True)
     commenter_id = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
+        db.Integer, db.ForeignKey("user_final.id"))
     parent = relationship('Users', back_populates='comment', lazy=True)
     comment_of_post = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.blog_posts_final.id"))
+        db.Integer, db.ForeignKey("blog_posts_final.id"))
     parent_2 = relationship('BlogPost', back_populates='comment', lazy=True)
     text = db.Column(db.Text, nullable=False)
 
