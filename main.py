@@ -58,7 +58,6 @@ class Users(UserMixin, db.Model):
     password = db.Column(db.Text(), nullable=False)
     child = relationship('BlogPost', back_populates="author", lazy=True)
     comment = relationship('Comment', back_populates="parent", lazy=True)
-    db.create_all()
 
 
 class BlogPost(db.Model):
@@ -75,7 +74,6 @@ class BlogPost(db.Model):
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.Text, nullable=False)
     comment = relationship('Comment', back_populates="parent_2", lazy=True)
-    db.create_all()
 
 
 class Comment(db.Model):
@@ -89,7 +87,9 @@ class Comment(db.Model):
         db.Integer, db.ForeignKey("flask_blog.blog_posts_final.id"))
     parent_2 = relationship('BlogPost', back_populates='comment', lazy=True)
     text = db.Column(db.Text, nullable=False)
-    db.create_all()
+
+
+db.create_all()
 
 
 # NOTE: making the login_manager to load the current user .. so that we can  later user TODO:current_user method ..
