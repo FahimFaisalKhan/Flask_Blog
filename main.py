@@ -38,6 +38,7 @@ gravatar = Gravatar(app,
 # CONNECT TO DB
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
     'DATABASE_URL').replace("://", "ql://", 1)
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -90,6 +91,8 @@ class Comment(db.Model):
 
 
 # NOTE: making the login_manager to load the current user .. so that we can  later user TODO:current_user method ..
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return Users.query.get(int(user_id))
@@ -122,7 +125,8 @@ def after_request(response):
 @app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    if Users.query.get(1).name:
+    admin_name = ''
+    if Users.query.get(1):
 
         admin_name = Users.query.get(1).name
     return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated, user=current_user, admin_name=admin_name)
