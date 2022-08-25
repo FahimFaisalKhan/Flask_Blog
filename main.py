@@ -22,7 +22,7 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 load_dotenv()
-app.config['SECRET_KEY'] = os.getenv('secret_key')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -36,7 +36,7 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('db_uri')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
