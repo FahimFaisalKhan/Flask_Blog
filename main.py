@@ -122,7 +122,9 @@ def after_request(response):
 @app.route('/')
 def get_all_posts():
     posts = BlogPost.query.all()
-    admin_name = Users.query.get(1).name
+    if Users.query.get(1).name:
+
+        admin_name = Users.query.get(1).name
     return render_template("index.html", all_posts=posts, logged_in=current_user.is_authenticated, user=current_user, admin_name=admin_name)
 
 
