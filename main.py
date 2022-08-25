@@ -51,7 +51,7 @@ migrate = Migrate(app, db)
 
 class Users(UserMixin, db.Model):
     __tablename__ = "user_final"
-    __table_args__ = ({"schema": "flask_blog"})
+    __table_args__ = ({"schema": "heroku_ext"})
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
     name = db.Column(db.String(150), nullable=False)
@@ -62,11 +62,11 @@ class Users(UserMixin, db.Model):
 
 class BlogPost(db.Model):
     __tablename__ = "blog_posts_final"
-    __table_args__ = ({'schema': 'flask_blog'})
+    __table_args__ = ({'schema': 'heroku_ext'})
     id = db.Column(db.Integer, primary_key=True)
 
     author_id = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
+        db.Integer, db.ForeignKey("heroku_ext.user_final.id"))
     author = relationship('Users', back_populates='child', lazy=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
@@ -78,13 +78,13 @@ class BlogPost(db.Model):
 
 class Comment(db.Model):
     __tablename__ = "comments"
-    __table_args__ = ({'schema': 'flask_blog'})
+    __table_args__ = ({'schema': 'heroku_ext'})
     id = db.Column(db.Integer, primary_key=True)
     commenter_id = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
+        db.Integer, db.ForeignKey("heroku_ext.user_final.id"))
     parent = relationship('Users', back_populates='comment', lazy=True)
     comment_of_post = db.Column(
-        db.Integer, db.ForeignKey("flask_blog.blog_posts_final.id"))
+        db.Integer, db.ForeignKey("heroku_ext.blog_posts_final.id"))
     parent_2 = relationship('BlogPost', back_populates='comment', lazy=True)
     text = db.Column(db.Text, nullable=False)
 
