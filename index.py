@@ -1,5 +1,4 @@
-import email
-from linecache import lazycache
+
 
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_bootstrap import Bootstrap
@@ -22,7 +21,8 @@ app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
 load_dotenv()
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+# app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+app.config['SECRET_KEY'] = os.getenv('secret_key')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 
@@ -36,8 +36,9 @@ gravatar = Gravatar(app,
                     use_ssl=False,
                     base_url=None)
 # CONNECT TO DB
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
-    'DATABASE_URL').replace("://", "ql://", 1)
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+#     'DATABASE_URL').replace("://", "ql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("db_uri")
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -45,14 +46,14 @@ db = SQLAlchemy(app)
 
 
 # CONFIGURE TABLES
-# migrate = Migrate(app, db)
+migrate = Migrate(app, db)
 
 # using UserMixin to use login_manager properties/attributes/methods from this table
 
 
 class Users(UserMixin, db.Model):
     __tablename__ = "user_final"
-    # __table_args__ = ({"schema": "flask_blog"})
+    __table_args__ = ({"schema": "flask_blog"})
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(250), unique=True, nullable=False)
     name = db.Column(db.String(150), nullable=False)
@@ -63,11 +64,11 @@ class Users(UserMixin, db.Model):
 
 class BlogPost(db.Model):
     __tablename__ = "blog_posts_final"
-    # __table_args__ = ({'schema': 'flask_blog'})
+    __table_args__ = ({'schema': 'flask_blog'})
     id = db.Column(db.Integer, primary_key=True)
 
     author_id = db.Column(
-        db.Integer, db.ForeignKey("user_final.id"))
+        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
     author = relationship('Users', back_populates='child', lazy=True)
     title = db.Column(db.String(250), unique=True, nullable=False)
     subtitle = db.Column(db.String(250), nullable=False)
@@ -79,18 +80,20 @@ class BlogPost(db.Model):
 
 class Comment(db.Model):
     __tablename__ = "comments"
-    # __table_args__ = ({'schema': 'flask_blog'})
+    __table_args__ = ({'schema': 'flask_blog'})
     id = db.Column(db.Integer, primary_key=True)
     commenter_id = db.Column(
-        db.Integer, db.ForeignKey("user_final.id"))
+        db.Integer, db.ForeignKey("flask_blog.user_final.id"))
     parent = relationship('Users', back_populates='comment', lazy=True)
     comment_of_post = db.Column(
-        db.Integer, db.ForeignKey("blog_posts_final.id"))
+        db.Integer, db.ForeignKey("flask_blog.blog_posts_final.id"))
     parent_2 = relationship('BlogPost', back_populates='comment', lazy=True)
     text = db.Column(db.Text, nullable=False)
 
 
 # NOTE: making the login_manager to load the current user .. so that we can  later user TODO:current_user method ..
+
+# db.create_all()
 
 
 @login_manager.user_loader
